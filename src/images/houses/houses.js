@@ -9,8 +9,9 @@ export const all_names = Object.keys(pictures)
 
 export default (name) => {
   const path = pictures[name]
-  if (!path && !__TEST__) {
+  if (!path) {
     console.warn(`missing house ${name}`)
+    return ''
   }
-  return path || ''
+  return path
 }
