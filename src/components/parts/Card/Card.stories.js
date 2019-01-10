@@ -2,7 +2,7 @@
 /* eslint max-len: 0 */
 import React from 'react'
 import {knob, stories} from 'helpers/storybook_helpers'
-import get_house_url, {all_names} from 'images/houses'
+import {all_names} from 'images/houses'
 // import _ from 'lodash'
 // import faker from 'faker'
 // import dayjs from 'dayjs'
@@ -16,8 +16,10 @@ stories('Parts', module)
       render: (Card) => {
         return () => (
           <Card
+            id={knob.text('id', 'id')}
+            image_name={knob.select('image_name', all_names, all_names[0])}
             show={knob.boolean('show', false)}
-            picture_url={get_house_url(knob.select('picture_url', all_names, all_names[0]))}
+            onSelect={knob.action('onSelect')}
           />
         )
       },

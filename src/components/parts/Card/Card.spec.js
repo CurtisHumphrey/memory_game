@@ -8,6 +8,8 @@ import {
   Card,
 } from './Card'
 
+import get_house_url from 'images/houses'
+
 // import stylesClass from './Card.scss'
 // const styles = _.mapValues(stylesClass, (raw) => '.' + raw)
 
@@ -21,6 +23,10 @@ export const Card_specs = describe('<Card />', () => {
     require('react-proptype-error-catcher')(sandbox)
 
     props = {
+      id: 'id',
+      image_name: '1',
+      show: false,
+      onSelect: sandbox.stub(),
     }
   })
 
@@ -35,5 +41,24 @@ export const Card_specs = describe('<Card />', () => {
     })
   })
   describe('behaviors', () => {
+    it('should pass show to CSSTransition', () => {
+      const wrapper = shallow(<Card {...props} />)
+      expect(wrapper.find('CSSTransition')).to.have.prop('in').eql(props.show)
+    })
+    it('should render image_name as img url', () => {
+      const wrapper = shallow(<Card {...props} />)
+      expect(wrapper.find('img')).to.have.prop('src').eql(get_house_url(props.image_name))
+    })
+    it('if show is false allow onSelect to return id', () => {
+      const wrapper = shallow(<Card {...props} />)
+      wrapper.simulate('click')
+      expect(props.onSelect).to.be.calledWith(props.id)
+    })
+    it('if show is true do not allow onSelect to return', () => {
+      props.show = true
+      const wrapper = shallow(<Card {...props} />)
+      wrapper.simulate('click')
+      expect(props.onSelect).to.be.not.called
+    })
   })
 })
