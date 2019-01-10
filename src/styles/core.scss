@@ -1,0 +1,43 @@
+@import 'base';
+@import '~normalize.css/normalize';
+
+// Some best-practice CSS that's useful for most apps
+// Just remove them if they're not what you want
+html {
+  @include reading_font();
+  font-size: $base_size;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-size: 2rem;
+}
+
+button {
+  background-color: lightgray; // macOS doesn't seem to have a default color
+}
+
+h1,
+h2,
+h3,
+h4 {
+  @include heading_font();
+  margin: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+:global {
+  @import 'common';
+}

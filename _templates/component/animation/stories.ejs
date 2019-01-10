@@ -1,0 +1,28 @@
+---
+to: src/components/animations/<%= h.inflection.camelize(name) %>/<%= h.inflection.camelize(name) %>.stories.js
+---
+/* eslint no-magic-numbers: 0 */
+/* eslint max-len: 0 */
+import React from 'react'
+import {knob, stories} from 'helpers/storybook_helpers'
+// import _ from 'lodash'
+// import faker from 'faker'
+// import dayjs from 'dayjs'
+
+stories('Animation', module)
+  .spec_and_info(
+    '<%= h.inflection.camelize(name) %>',
+    {
+      spec: require('./<%= h.inflection.camelize(name) %>.spec').<%= h.inflection.camelize(name) %>_specs,
+      Component: require('./<%= h.inflection.camelize(name) %>').<%= h.inflection.camelize(name) %>,
+      render: (<%= h.inflection.camelize(name) %>) => {
+        return () => (
+          <<%= h.inflection.camelize(name) %>
+            in={knob.boolean('in', false)}
+          >
+            <div>Testing</div>
+          </<%= h.inflection.camelize(name) %>>
+        )
+      },
+    }
+  )

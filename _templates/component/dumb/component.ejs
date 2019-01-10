@@ -1,0 +1,22 @@
+---
+to: src/components/<%= folder %>/<%= h.inflection.camelize(name) %>/<%= h.inflection.camelize(name) %>.js
+---
+import React from 'react'
+import PropTypes from 'prop-types'
+
+import './<%= h.inflection.camelize(name) %>.scss'
+
+export class <%= h.inflection.camelize(name) %> extends React.PureComponent {
+  static propTypes = {
+    className: PropTypes.string,
+  };
+  static defaultProps = {
+  };
+
+  render () {
+    return (
+      <div>loading...</div>
+    )
+  }
+}
+export default <%= h.inflection.camelize(name) %>

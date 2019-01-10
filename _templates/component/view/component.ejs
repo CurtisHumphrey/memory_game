@@ -1,0 +1,52 @@
+---
+to: src/views/<%= h.inflection.camelize(name) %>/<%= h.inflection.camelize(name) %>.js
+---
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import Helmet from 'react-helmet'
+import { createStructuredSelector } from 'reselect'
+import { grep_matching_from_object } from 'helpers/redux_helpers'
+
+import './<%= h.inflection.camelize(name) %>.scss'
+import HeaderWithMenuOpener from 'components/app_wide/HeaderWithMenuOpener'
+
+export const selectors = grep_matching_from_object({
+})
+
+export const actions = grep_matching_from_object({
+})
+
+const mapStateToProps = createStructuredSelector(selectors)
+
+export class <%= h.inflection.camelize(name) %> extends React.PureComponent {
+  static propTypes = {
+    className: PropTypes.string,
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+      }).isRequired,
+    }).isRequired,
+    // from redux
+
+  };
+  static defaultProps = {
+  };
+
+  render () {
+    return (
+      <div styleName='root'>
+        <Helmet
+          title={'<%= h.inflection.camelize(name) %>'}
+          meta={[{
+            name: 'description',
+            content: '',
+          }]}
+        />
+        <HeaderWithMenuOpener>
+          <div><%= h.inflection.camelize(name) %></div>
+        </HeaderWithMenuOpener>
+      </div>
+    )
+  }
+}
+export default connect(mapStateToProps, actions)(<%= h.inflection.camelize(name) %>)

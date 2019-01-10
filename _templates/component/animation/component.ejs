@@ -1,0 +1,33 @@
+---
+to: src/components/animations/<%= h.inflection.camelize(name) %>/<%= h.inflection.camelize(name) %>.js
+---
+import React from 'react'
+import PropTypes from 'prop-types'
+
+import css_names from './<%= h.inflection.camelize(name) %>.scss'
+import { CSSTransition } from 'react-transition-group'
+
+export class <%= h.inflection.camelize(name) %> extends React.PureComponent {
+  static propTypes = {
+    in: PropTypes.bool,
+    children: PropTypes.node.isRequired,
+  };
+  static defaultProps = {
+  };
+
+  render () {
+    let className = css_names.root
+    if (this.props.children.props.className) className += ' ' + this.props.children.props.className
+    return (
+      <CSSTransition
+        in={this.props.in}
+        classNames={css_names}
+        timeout={300}
+        appear
+      >
+        {React.cloneElement(this.props.children, {className})}
+      </CSSTransition>
+    )
+  }
+}
+export default <%= h.inflection.camelize(name) %>

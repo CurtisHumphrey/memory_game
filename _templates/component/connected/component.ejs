@@ -1,0 +1,36 @@
+---
+to: src/components/<%= folder %>/<%= h.inflection.camelize(name) %>/<%= h.inflection.camelize(name) %>.js
+---
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
+import { grep_matching_from_object } from 'helpers/redux_helpers'
+
+import './<%= h.inflection.camelize(name) %>.scss'
+
+export const selectors = grep_matching_from_object({
+})
+
+export const actions = grep_matching_from_object({
+})
+
+const mapStateToProps = createStructuredSelector(selectors)
+
+export class <%= h.inflection.camelize(name) %> extends React.PureComponent {
+  static propTypes = {
+    className: PropTypes.string,
+
+    // from redux
+
+  };
+  static defaultProps = {
+  };
+
+  render () {
+    return (
+      <div>loading...</div>
+    )
+  }
+}
+export default connect(mapStateToProps, actions)(<%= h.inflection.camelize(name) %>)

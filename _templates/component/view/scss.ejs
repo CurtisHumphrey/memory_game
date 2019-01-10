@@ -1,0 +1,12 @@
+---
+to: src/views/<%= h.inflection.camelize(name) %>/<%= h.inflection.camelize(name) %>.scss
+---
+@import '~styles/base';
+
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  background-color: $color_background_light;
+  height: 100%;
+}
