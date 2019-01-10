@@ -18,7 +18,7 @@ stories('Parts', module)
           <Card
             id={knob.text('id', 'id')}
             image_name={knob.select('image_name', all_names, all_names[0])}
-            show={knob.boolean('show', false)}
+            show_front={knob.boolean('show_front', false)}
             onSelect={knob.action('onSelect')}
           />
         )

@@ -1,20 +1,14 @@
 @import '~styles/base';
 
-%root {
+.root {
   position: relative;
-  cursor: pointer;
   width: 100px ;
   height: 100px;
   perspective: 800px;
 }
 
-.show_back {
-  @extend %root;
-}
-
-.show_front {
-  @extend %root;
-  cursor: default;
+.clickable {
+  cursor: pointer;
 }
 
 .card {
@@ -24,7 +18,7 @@
   height: 100%;
   transform-style: preserve-3d;
 
-  .show_back &:hover {
+  .clickable &:hover {
     transform: rotateY(-10deg);
   }
 }

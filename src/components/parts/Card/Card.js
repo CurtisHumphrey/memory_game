@@ -9,27 +9,27 @@ export class Card extends React.PureComponent {
   static propTypes = {
     className: PropTypes.string,
     id: PropTypes.string.isRequired,
-    show: PropTypes.bool,
+    show_front: PropTypes.bool,
     image_name: PropTypes.string.isRequired,
     onSelect: PropTypes.func.isRequired,
   };
 
   _click = () => {
-    if (this.props.show) return
+    if (this.props.show_front) return
     this.props.onSelect(this.props.id)
   }
 
   render () {
-    const {id, show, image_name, className, ...others} = this.props
+    const {id, show_front, image_name, className, ...others} = this.props
     return (
       <div
-        styleName={show ? 'show_front' : 'show_back'}
+        styleName={'root' + (show_front ? '' : ' clickable')}
         className={className}
         onClick={this._click}
         {...others}
       >
         <CSSTransition
-          in={show}
+          in={show_front}
           classNames={classNames}
           timeout={500}
           appear
