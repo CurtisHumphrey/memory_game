@@ -32,7 +32,6 @@ export class Card extends React.PureComponent {
           in={show_front}
           classNames={classNames}
           timeout={500}
-          appear
         >
           <div styleName='card'>
             <div styleName='front'>

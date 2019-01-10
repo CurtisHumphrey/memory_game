@@ -5,7 +5,6 @@ import {knob, stories} from 'helpers/storybook_helpers'
 import {all_names} from 'images/houses'
 // import _ from 'lodash'
 // import faker from 'faker'
-// import dayjs from 'dayjs'
 
 stories('Parts', module)
   .spec_and_info(

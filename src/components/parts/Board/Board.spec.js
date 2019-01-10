@@ -26,7 +26,7 @@ export const Board_specs = describe('<Board />', () => {
     props = {
       cards: _.times(TOTAL_CARDS, (id) => ({
         id: String(id),
-        image_name: String(Math.round(id / 2)),
+        image_name: String(Math.floor(id / 2)),
         show_front: false,
       })),
       onCardSelect: sandbox.stub(),

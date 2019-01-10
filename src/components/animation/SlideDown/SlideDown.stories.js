@@ -4,7 +4,6 @@ import React from 'react'
 import {knob, stories} from 'helpers/storybook_helpers'
 // import _ from 'lodash'
 // import faker from 'faker'
-// import dayjs from 'dayjs'
 
 stories('Animation', module)
   .spec_and_info(

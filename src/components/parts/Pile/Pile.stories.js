@@ -9,24 +9,21 @@ const TOTAL_CARDS = 24
 
 stories('Parts', module)
   .spec_and_info(
-    'Board',
+    'Pile',
     {
-      spec: require('./Board.spec').Board_specs,
-      Component: require('./Board').Board,
-      render: (Board) => {
-        const cards = _.times(TOTAL_CARDS, (id) => ({
+      spec: require('./Pile.spec').Pile_specs,
+      Component: require('./Pile').Pile,
+      render: (Pile) => {
+        const show_front = knob.boolean('cards[].show_front', false)
+        const cards = _.times(knob.number('# cards', 3, {range: true, min: 0, max:TOTAL_CARDS, step:1}), (id) => ({
           id: String(id),
           image_name: String(Math.floor(id / 2)),
-          show_front: false,
+          show_front,
         }))
-        if (knob.boolean('one removed', false)) {
-          cards[1] = null
-        }
-
+        console.log(JSON.stringify(cards))
         return () => (
-          <Board
+          <Pile
             cards={cards}
-            onCardSelect={knob.action('onCardSelect')}
           />
         )
       },

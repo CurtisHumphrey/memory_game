@@ -2,8 +2,8 @@
 
 .root {
   position: relative;
-  width: 100px ;
-  height: 100px;
+  width: $card_size;
+  height: $card_size;
   perspective: 800px;
 }
 
@@ -46,7 +46,7 @@
   @extend .front;
   transform: rotateY(0deg);
   border: 2px solid $color_blue;
-  background: center url('images/house.svg');
+  background: center url('images/house.svg') white;
   background-size: 25% 25%;
 }
 
