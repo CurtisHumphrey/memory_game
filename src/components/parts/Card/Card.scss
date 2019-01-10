@@ -13,10 +13,14 @@
 
 .card {
   position: absolute;
-  transition: transform 500ms;
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
+}
+
+.card_hover {
+  @extend .card;
+  transition: transform 500ms;
 
   .clickable &:hover {
     transform: rotateY(-10deg);
@@ -48,24 +52,4 @@
   border: 2px solid $color_blue;
   background: center url('images/house.svg') white;
   background-size: 25% 25%;
-}
-
-.enter {
-  &Active {
-    transform: rotateY(-180deg);
-  }
-
-  &Done {
-    transform: rotateY(-180deg);
-  }
-}
-
-.exit {
-  &Active {
-    transform: rotateY(0deg);
-  }
-
-  &Done {
-    transform: rotateY(0deg);
-  }
 }

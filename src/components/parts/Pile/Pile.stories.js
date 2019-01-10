@@ -14,13 +14,12 @@ stories('Parts', module)
       spec: require('./Pile.spec').Pile_specs,
       Component: require('./Pile').Pile,
       render: (Pile) => {
-        const show_front = knob.boolean('cards[].show_front', false)
+        const show_front = knob.boolean('cards[].show_front', true)
         const cards = _.times(knob.number('# cards', 3, {range: true, min: 0, max:TOTAL_CARDS, step:1}), (id) => ({
           id: String(id),
           image_name: String(Math.floor(id / 2)),
           show_front,
         }))
-        console.log(JSON.stringify(cards))
         return () => (
           <Pile
             cards={cards}
