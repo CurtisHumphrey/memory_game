@@ -200,6 +200,22 @@ describe('game_management redux', () => {
     afterEach(() => {
       test_rules({dispatch, database})
     })
+    it('should have a join game', () => {
+      actions.join_game('host_game_id')(dispatch, getState)
+
+      expect(dispatch).to.be.calledWith(private_actions.set_game_id('host_game_id'))
+      expect(dispatch).to.be.calledWith(firebase_actions.switch({
+        path: '/games/host_game_id/meta',
+        old_path: '',
+        update_action: ACTION_TYPES.update_meta,
+      }))
+
+      expect(dispatch).to.be.calledWith('listen_for_cards')
+      expect(cards_actions.listen_for_cards(firebase_key))
+
+      expect(dispatch).to.be.calledWith('listen_for_players')
+      expect(players_actions.listen_for_players(firebase_key))
+    })
     it('should have a new_game that creates a new entry in firebase', () => {
       actions.new_game()(dispatch, getState)
 

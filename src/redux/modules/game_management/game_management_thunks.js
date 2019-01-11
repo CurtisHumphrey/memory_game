@@ -30,6 +30,21 @@ const change_phase = (phase) => (dispatch, getState) => {
 
 const TOTAL_CARDS = 24
 
+export const join_game = (game_id) => (dispatch, getState) => {
+  const old_id = selectors.game_id(getState())
+
+  dispatch(private_actions.set_game_id(game_id))
+
+  dispatch(firebase_actions.switch({
+    path: make_meta_path(game_id),
+    old_path: old_id ? make_meta_path(old_id) : '',
+    update_action: ACTION_TYPES.update_meta,
+  }))
+
+  dispatch(cards_actions.listen_for_cards(game_id))
+  dispatch(players_actions.listen_for_players(game_id))
+}
+
 export const new_game = () => (dispatch, getState) => {
   const old_id = selectors.game_id(getState())
 
@@ -41,16 +56,7 @@ export const new_game = () => (dispatch, getState) => {
   }, {path: '/games'}))
 
   const game_id = ref.key
-  dispatch(private_actions.set_game_id(game_id))
-
-  dispatch(firebase_actions.switch({
-    path: make_meta_path(game_id),
-    old_path: old_id ? make_meta_path(old_id) : '',
-    update_action: ACTION_TYPES.update_meta,
-  }))
-
-  dispatch(cards_actions.listen_for_cards(game_id))
-  dispatch(players_actions.listen_for_players(game_id))
+  join_game(game_id)(dispatch, getState)
 
   dispatch(cards_actions.setup_cards(get_shuffle_cards(TOTAL_CARDS)))
   dispatch(firebase_actions.set('dealer', {path: make_meta_path(game_id) + '/phase'}))
