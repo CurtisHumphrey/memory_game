@@ -9,8 +9,8 @@ import {
 import {firebase_actions} from 'redux_firebase'
 
 const make_players_path = (game_id) => `/games/${game_id}/players`
-// const get_base_path = (getState) => make_players_path(selectors.game_id(getState()))
-// const make_path = (getState, append = '') => ({path: `${get_base_path(getState)}/${append}`})
+const get_base_path = (getState) => make_players_path(selectors.game_id(getState()))
+const make_path = (getState, append = '') => ({path: `${get_base_path(getState)}/${append}`})
 
 export const listen_for_players = (game_id) => (dispatch, getState) => {
   const old_id = selectors.game_id(getState())
@@ -25,5 +25,16 @@ export const listen_for_players = (game_id) => (dispatch, getState) => {
 }
 
 export const switch_players = () => (dispatch, getState) => {
+  dispatch(firebase_actions.set(
+    selectors.active_player(getState()) === 'host' ? 'friend' : 'host',
+    make_path(getState, 'active_player')
+  ))
+}
 
+export const set_name = (name) => (dispatch, getState) => {
+  const name_type = selectors.which_player_is_me(getState())
+  dispatch(firebase_actions.set(
+    name,
+    make_path(getState, `${name_type}_name`)
+  ))
 }

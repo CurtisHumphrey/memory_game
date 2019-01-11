@@ -4,13 +4,18 @@ import {
   make_simple_selectors,
   make_reducer_n_actions,
 } from 'redux_helpers'
+import _ from 'lodash'
 
 // -------
 // Initial State
 // --------
 
 const initial_state = {
+  game_id: '',
   active_player: 'host',
+  host_name: '',
+  friend_name: '',
+  which_player_is_me: 'host',
 }
 
 // -------
@@ -31,10 +36,12 @@ export const selectors = {
 const action_types_prefix = 'players/'
 
 const public_handlers = {
-  reset: () => Immutable(initial_state),
+  am_friend: (state) => state.merge({which_player_is_me: 'friend'}),
 }
 
 const private_handlers = {
+  update_info: (state, {payload}) => state.merge(_.defaultTo(payload, {})),
+  set_game_id: (state, {payload}) => state.merge({game_id: payload}),
 }
 
 export const {reducer, private_actions, actions, ACTION_TYPES} = make_reducer_n_actions({
