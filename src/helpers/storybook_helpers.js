@@ -22,9 +22,9 @@ export const stories = (story_name, mod, size) => {
     .addDecorator(host({
       background: '#FFF',
       backdrop: '#EBDED3', // $color_highlight_second_tint
-      ...size,
       width: 350,
       height: 650,
+      ...size,
     }))
     .addDecorator((getStory) => (
       <MemoryRouter>

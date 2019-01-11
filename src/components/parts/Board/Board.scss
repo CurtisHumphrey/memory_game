@@ -3,6 +3,7 @@
 .root {
   display: flex;
   flex-wrap: wrap;
+  max-width: (6*($card_size+(4*$base_size)))+$base_size;
 }
 
 .card {

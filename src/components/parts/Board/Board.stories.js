@@ -7,7 +7,7 @@ import _ from 'lodash'
 
 const TOTAL_CARDS = 24
 
-stories('Parts', module)
+stories('Parts', module, {width: '100%', height: '100%'})
   .spec_and_info(
     'Board',
     {

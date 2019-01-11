@@ -18,7 +18,7 @@ export class Board extends React.PureComponent {
 
   render_card_placement = (card, index) => {
     if (card == null) {
-      return <EmptyCardSpace key={index} />
+      return <EmptyCardSpace key={index} styleName='card' />
     }
 
     return (
