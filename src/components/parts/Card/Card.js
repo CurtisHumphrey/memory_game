@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Overdrive from 'react-overdrive'
 
 import './Card.scss'
 import posed from 'react-pose'
@@ -34,24 +35,26 @@ export class Card extends React.PureComponent {
     const clickable = !show_front && onSelect ? ' clickable' : ''
 
     return (
-      <div
-        styleName={'root' + clickable}
-        className={className}
-        onClick={this._click}
-        {...others}
-      >
-        <CardPose
-          pose={show_front ? 'front' : 'back'}
-          styleName='card'
+      <Overdrive id={id}>
+        <div
+          styleName={'root' + clickable}
+          className={className}
+          onClick={this._click}
+          {...others}
         >
-          <div styleName='card_hover'>
-            <div styleName='front'>
-              <img src={get_house_url(image_name)} />
+          <CardPose
+            pose={show_front ? 'front' : 'back'}
+            styleName='card'
+          >
+            <div styleName='card_hover'>
+              <div styleName='front'>
+                <img src={get_house_url(image_name)} />
+              </div>
+              <div styleName='back' />
             </div>
-            <div styleName='back' />
-          </div>
-        </CardPose>
-      </div>
+          </CardPose>
+        </div>
+      </Overdrive>
     )
   }
 }

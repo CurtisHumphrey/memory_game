@@ -1,0 +1,48 @@
+@import '~styles/base';
+
+.root {
+  border: 2px solid $color_blue;
+  border-radius: 2rem;
+  padding: 2rem;
+  width: $card_size*3;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  margin: 0 1rem 1rem 1rem;
+  text-transform: capitalize;
+  color: darken($color_blue, 25%);
+  font-size: 4rem;
+}
+
+.score {
+  @extend .name;
+  color: black;
+}
+
+.pile_row {
+  position: relative;
+}
+
+.active {
+  $color: hsl(60, 69%, 61%);
+  position: absolute;
+  bottom: 0.5*$card_size;
+  border: 2px solid lighten($color, 20%);
+  border-radius: 50%;
+  background-color: $color;
+  width: 0.5*$card_size;
+  height: 0.5*$card_size;
+
+  &.left {
+    left: 2rem;
+  }
+
+  &.right {
+    right: 2rem;
+  }
+}

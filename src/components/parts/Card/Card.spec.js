@@ -59,7 +59,7 @@ export const Card_specs = describe('<Card />', () => {
     it('if show_front is false allow onSelect to return id', () => {
       props.show_front = false
       const wrapper = shallow(<Card {...props} />)
-      wrapper.simulate('click')
+      wrapper.find(styles.root).simulate('click')
       expect(wrapper.find(styles.clickable)).to.exist
       expect(props.onSelect).to.be.calledWith(props.id)
     })
@@ -67,13 +67,13 @@ export const Card_specs = describe('<Card />', () => {
       props.show_front = false
       props.onSelect = undefined
       const wrapper = shallow(<Card {...props} />)
-      wrapper.simulate('click')
+      wrapper.find(styles.root).simulate('click')
       expect(wrapper.find(styles.clickable)).to.not.exist
     })
     it('if show_front is true do not allow onSelect to return', () => {
       props.show_front = true
       const wrapper = shallow(<Card {...props} />)
-      wrapper.simulate('click')
+      wrapper.find(styles.root).simulate('click')
       expect(wrapper.find(styles.clickable)).to.not.exist
       expect(props.onSelect).to.be.not.called
     })
