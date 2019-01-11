@@ -1,5 +1,5 @@
 import Immutable from 'seamless-immutable'
-import { createSelector } from 'reselect'
+// import { createSelector } from 'reselect'
 import {
   make_simple_selectors,
   make_reducer_n_actions,
@@ -11,56 +11,35 @@ import _ from 'lodash'
 // --------
 
 const initial_state = {
-  cards: {},
+  phase: 'setup',
   game_id: '',
+  next_game_id: '',
 }
 
 // -------
 // Selectors
 // --------
-const BASE = 'cards_locations'
+const BASE = 'game_management'
 export {BASE as BASE_SELECTOR_PATH}
 
 const simple_selectors = make_simple_selectors(initial_state, BASE)
 
-const shuffle_order = createSelector(
-  simple_selectors.cards,
-  (cards) => _.sortBy(cards, 'shuffle_order')
-)
-
-const board_cards = createSelector(
-  shuffle_order,
-  (cards) => cards.map((card) => (card.location !== 'board') ? null : card)
-)
-
-const make_location_selector = (location) => createSelector(
-  shuffle_order,
-  (cards) => _.filter(cards, {location})
-)
-
-const dealer_deck = make_location_selector('dealer')
-const host_cards = make_location_selector('host')
-const friend_cards = make_location_selector('friend')
-
 export const selectors = {
   ...simple_selectors,
-  dealer_deck,
-  board_cards,
-  host_cards,
-  friend_cards,
 }
 
 // ------------------------------------
 // Reducer and Actions
 // ------------------------------------
-const action_types_prefix = 'cards_locations/'
+const action_types_prefix = 'game_management/'
 
 const public_handlers = {
 }
 
 const private_handlers = {
-  update_cards: (state, {payload}) => state.merge({
-    cards: Immutable.replace(state.cards, _.defaultTo(payload, {}), {deep: true}),
+  update_meta: (state, {payload}) => state.merge({
+    phase: payload.phase,
+    next_game_id: _.defaultTo(payload.next_game_id, ''),
   }),
   set_game_id: (state, {payload}) => state.merge({game_id: payload}),
 }

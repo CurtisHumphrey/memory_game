@@ -4,7 +4,7 @@ import reducer, {
   selectors,
   ACTION_TYPES,
 } from './cards_locations'
-import { get_shuffle_cards } from './cards_locations_simple'
+import get_shuffle_cards from 'redux/utils/get_shuffle_cards'
 import _ from 'lodash'
 
 import {firebase_actions} from 'redux_firebase'
@@ -136,42 +136,42 @@ describe('cards_locations redux', () => {
       })
 
       it('should have a show_card that changes the card\'s show_front to true', () => {
-        actions.show_card('card-1')(dispatch, getState)
+        actions.show_card('card_1')(dispatch, getState)
         expect(firebase_actions.set).to.be.calledWith(
           true,
-          { path: '/games/game_id/cards/card-1/show_front' }
+          { path: '/games/game_id/cards/card_1/show_front' }
         )
       })
 
       it('should have a hide_cards that changes the cards show_front to false', () => {
-        actions.hide_cards([{id: 'card-1'}, {id: 'card-2'}])(dispatch, getState)
+        actions.hide_cards([{id: 'card_1'}, {id: 'card_2'}])(dispatch, getState)
         expect(firebase_actions.update).to.be.calledWith(
           {
-            'card-1/show_front': false,
-            'card-2/show_front': false,
+            'card_1/show_front': false,
+            'card_2/show_front': false,
           },
           { path: '/games/game_id/cards/' }
         )
       })
 
       it('should have a move_card that changes location', () => {
-        actions.move_card({id: 'card-2', new_location: 'board'})(dispatch, getState)
+        actions.move_card({id: 'card_2', new_location: 'board'})(dispatch, getState)
         expect(firebase_actions.update).to.be.calledWith(
           {
             location: 'board',
             completed_order: null,
           },
-          { path: '/games/game_id/cards/card-2' }
+          { path: '/games/game_id/cards/card_2' }
         )
       })
       it('should have a move_card that can also update completed_order', () => {
-        actions.move_card({id: 'card-2', new_location: 'board', completed_order: 1})(dispatch, getState)
+        actions.move_card({id: 'card_2', new_location: 'board', completed_order: 1})(dispatch, getState)
         expect(firebase_actions.update).to.be.calledWith(
           {
             location: 'board',
             completed_order: 1,
           },
-          { path: '/games/game_id/cards/card-2' }
+          { path: '/games/game_id/cards/card_2' }
         )
       })
 
