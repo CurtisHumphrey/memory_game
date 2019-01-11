@@ -1,6 +1,6 @@
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
-import { routerMiddleware, routerReducer as routing } from 'react-router-redux'
+import { connectRouter, routerMiddleware } from 'connected-react-router'
 import createHistory from 'history/createBrowserHistory'
 import { firebase_middleware, reducer as firebase } from 'redux_firebase'
 
@@ -30,7 +30,7 @@ export default (initialState = {}) => /* istanbul ignore next */ {
   // Store Instantiation and HMR Setup
   // ======================================================
   const init_reducers = {
-    routing,
+    router: connectRouter(browserHistory),
     firebase,
   }
   const store = createStore(

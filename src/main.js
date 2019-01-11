@@ -2,9 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import getStore from './store/getStore'
 import { Provider } from 'react-redux'
-import { ConnectedRouter } from 'react-router-redux'
+import { ConnectedRouter } from 'connected-react-router'
 
-import routes from 'routes'
+import Routes from 'routes'
 
 // ========================================================
 // Store Instantiation
@@ -19,7 +19,9 @@ const MOUNT_NODE = document.getElementById('root')
 let render = () => {
   ReactDOM.render(
     <Provider store={store}>
-      <ConnectedRouter history={store.history} children={routes} />
+      <ConnectedRouter history={store.history} >
+        <Routes />
+      </ConnectedRouter>
     </Provider>,
     MOUNT_NODE
   )
