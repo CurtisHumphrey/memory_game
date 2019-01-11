@@ -15,11 +15,6 @@ import {
   selectors as cards_selectors,
 } from '../cards_locations'
 
-import {
-  actions as players_actions,
-  selectors as players_selectors,
-} from '../players'
-
 const make_meta_path = (game_id) => `/games/${game_id}/meta`
 const get_base_path = (getState) => make_meta_path(selectors.game_id(getState()))
 const make_path = (getState, append = '') => ({path: `${get_base_path(getState)}/${append}`})
@@ -42,7 +37,6 @@ export const join_game = (game_id) => (dispatch, getState) => {
   }))
 
   dispatch(cards_actions.listen_for_cards(game_id))
-  dispatch(players_actions.listen_for_players(game_id))
 }
 
 export const new_game = () => (dispatch, getState) => {
@@ -52,6 +46,7 @@ export const new_game = () => (dispatch, getState) => {
     created_at: SPECIAL_VALUES.TIMESTAMP,
     meta: {
       phase: 'setup',
+      active_player: 'host',
     },
   }, {path: '/games'}))
 
@@ -107,7 +102,7 @@ export const select_card = (card) => (dispatch, getState) => {
 
   if (last_card.image_name === card.image_name) {
     // match!
-    const location = players_selectors.active_player(getState())
+    const location = selectors.active_player(getState())
     const completed_order = get_completed_order(board_cards)
     dispatch(cards_actions.move_card({
       id: card.id,
@@ -119,7 +114,7 @@ export const select_card = (card) => (dispatch, getState) => {
       location,
       completed_order,
     }))
-    dispatch(players_actions.switch_players())
+    switch_players(dispatch, getState)
 
     if ((completed_order + 1) * PAIR >= TOTAL_CARDS) {
       change_phase('finished')(dispatch, getState)
@@ -128,7 +123,14 @@ export const select_card = (card) => (dispatch, getState) => {
     // no match
     setTimeout(() => {
       dispatch(cards_actions.hide_cards([last_card, card]))
-      dispatch(players_actions.switch_players())
+      switch_players(dispatch, getState)
     }, SHOW_DELAY)
   }
+}
+
+const switch_players = (dispatch, getState) => {
+  dispatch(firebase_actions.set(
+    selectors.active_player(getState()) === 'host' ? 'friend' : 'host',
+    make_path(getState, 'active_player')
+  ))
 }

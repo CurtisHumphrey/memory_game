@@ -17,11 +17,6 @@ import {
   selectors as cards_selectors,
 } from '../cards_locations'
 
-import {
-  actions as players_actions,
-  selectors as players_selectors,
-} from '../players'
-
 const TOTAL_CARDS = 24
 
 describe('game_management redux', () => {
@@ -34,6 +29,12 @@ describe('game_management redux', () => {
   function expect_phase_sent (phase) {
     expect(dispatch, 'phase to be sent').to.be.calledWith(firebase_actions.set(phase, {
       path: '/games/game_id/meta/phase',
+    }))
+  }
+
+  function expect_player_switched (new_player) {
+    expect(dispatch, 'expect player to be switched').to.be.calledWith(firebase_actions.set(new_player, {
+      path: '/games/game_id/meta/active_player',
     }))
   }
 
@@ -59,6 +60,8 @@ describe('game_management redux', () => {
     expect(selectors.phase(state)).to.eql('setup')
     expect(selectors.game_id(state)).to.eql('')
     expect(selectors.next_game_id(state)).to.eql('')
+    expect(selectors.active_player(state), 'active_player').to.eql('host')
+    expect(selectors.which_player_is_me(state), 'which_player_is_me').to.eql('host')
   })
   describe('private_actions', () => {
     it('should have a update_meta that works for phase', () => {
@@ -68,6 +71,10 @@ describe('game_management redux', () => {
     it('should have a update_meta that works for next_game_id', () => {
       state = reducer(state, private_actions.update_meta({next_game_id: 'new_id'}))
       expect(selectors.next_game_id(state)).to.eql('new_id')
+    })
+    it('should have a update_meta that works for active_player', () => {
+      state = reducer(state, private_actions.update_meta({active_player: 'friend'}))
+      expect(selectors.active_player(state), 'active_player').to.eql('friend')
     })
     it('should have a set_game_id', () => {
       state = reducer(state, private_actions.set_game_id('game_id'))
@@ -80,8 +87,6 @@ describe('game_management redux', () => {
       sandbox.stub(cards_actions, 'show_card').returns('show_card')
       sandbox.stub(cards_actions, 'hide_cards').returns('hide_cards')
       sandbox.stub(cards_actions, 'move_card').returns('move_card')
-      sandbox.stub(players_actions, 'switch_players').returns('switch_players')
-      sandbox.stub(players_selectors, 'active_player').returns('host')
 
       state = reducer(state, private_actions.set_game_id('game_id'))
 
@@ -109,6 +114,10 @@ describe('game_management redux', () => {
 
       expect_phase_sent('playing')
     })
+    it('should have a am_friend', () => {
+      state = reducer(undefined, actions.am_friend())
+      expect(selectors.which_player_is_me(state), 'which_player_is_me').to.eql('friend')
+    })
     describe('selecting cards', () => {
       beforeEach(() => {
         sandbox.stub(cards_selectors, 'board_cards').callsFake(() => _.map(cards))
@@ -118,7 +127,6 @@ describe('game_management redux', () => {
         expect(dispatch).to.be.calledWith('show_card')
         expect(cards_actions.show_card).to.be.calledWith('card_1')
         expect(dispatch).to.be.not.calledWith('hide_cards')
-        expect(dispatch).to.be.not.calledWith('switch_players')
       })
       it('if the two selections do not match call hide_cards after 1 second delay and switch_players', () => {
         clock = lolex.install()
@@ -141,7 +149,7 @@ describe('game_management redux', () => {
           cards.card_1,
           cards.card_2,
         ])
-        expect(dispatch).to.be.calledWith('switch_players')
+        expect_player_switched('friend')
       })
       it('if the two selections do match call move_card on both and switch_players', () => {
         cards.card_1.show_front = true
@@ -166,7 +174,7 @@ describe('game_management redux', () => {
           location: 'host',
           completed_order: 0,
         })
-        expect(dispatch).to.be.calledWith('switch_players')
+        expect_player_switched('friend')
       })
       it('if a third selection is attempted do nothing', () => {
         cards.card_1.show_front = true
@@ -195,7 +203,6 @@ describe('game_management redux', () => {
       dispatch.returns({key: firebase_key})
       sandbox.stub(cards_actions, 'setup_cards').returns('setup_cards')
       sandbox.stub(cards_actions, 'listen_for_cards').returns('listen_for_cards')
-      sandbox.stub(players_actions, 'listen_for_players').returns('listen_for_players')
     })
     afterEach(() => {
       test_rules({dispatch, database})
@@ -212,9 +219,6 @@ describe('game_management redux', () => {
 
       expect(dispatch).to.be.calledWith('listen_for_cards')
       expect(cards_actions.listen_for_cards(firebase_key))
-
-      expect(dispatch).to.be.calledWith('listen_for_players')
-      expect(players_actions.listen_for_players(firebase_key))
     })
     it('should have a new_game that creates a new entry in firebase', () => {
       actions.new_game()(dispatch, getState)
@@ -223,6 +227,7 @@ describe('game_management redux', () => {
         created_at: SPECIAL_VALUES.TIMESTAMP,
         meta: {
           phase: 'setup',
+          active_player: 'host',
         },
       }, {
         path: '/games',
@@ -237,9 +242,6 @@ describe('game_management redux', () => {
 
       expect(dispatch).to.be.calledWith('listen_for_cards')
       expect(cards_actions.listen_for_cards(firebase_key))
-
-      expect(dispatch).to.be.calledWith('listen_for_players')
-      expect(players_actions.listen_for_players(firebase_key))
 
       expect(dispatch).calledWith('setup_cards')
       expect(_.keys(cards_actions.setup_cards.firstCall.args[0])).to.have.length(TOTAL_CARDS)

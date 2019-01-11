@@ -14,6 +14,8 @@ const initial_state = {
   phase: 'setup',
   game_id: '',
   next_game_id: '',
+  active_player: 'host',
+  which_player_is_me: 'host',
 }
 
 // -------
@@ -34,13 +36,11 @@ export const selectors = {
 const action_types_prefix = 'game_management/'
 
 const public_handlers = {
+  am_friend: (state) => state.merge({which_player_is_me: 'friend'}),
 }
 
 const private_handlers = {
-  update_meta: (state, {payload}) => state.merge({
-    phase: payload.phase,
-    next_game_id: _.defaultTo(payload.next_game_id, ''),
-  }),
+  update_meta: (state, {payload}) => state.merge(_.defaultTo(payload, {})),
   set_game_id: (state, {payload}) => state.merge({game_id: payload}),
 }
 
