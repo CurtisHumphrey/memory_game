@@ -39,7 +39,6 @@ export class Pile extends React.PureComponent {
     return (
       <div styleName='center' key={card.id}>
         <Card
-          onSelect={_.noop}
           {...card}
           style={{
             transform: `rotateZ(${rotate}deg) translate(${tx}px, ${ty}px)`,

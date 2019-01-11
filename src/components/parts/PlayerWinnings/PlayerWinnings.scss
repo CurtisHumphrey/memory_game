@@ -25,7 +25,9 @@
 }
 
 .pile_row {
+  display: flex;
   position: relative;
+  justify-content: center;
 }
 
 .active {
