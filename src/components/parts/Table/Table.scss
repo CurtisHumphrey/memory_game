@@ -1,0 +1,23 @@
+@import '~styles/base';
+
+.root {
+  background: url('../Table/felt.jpg');
+  width: 100%;
+  min-height: 100%;
+}
+
+.player_row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: $card_size;
+}
+
+.board {
+  display: flex;
+  justify-content: center;
+
+  & > * {
+    flex-shrink: 1;
+  }
+}
+
