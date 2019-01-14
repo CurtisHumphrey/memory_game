@@ -24,12 +24,18 @@ stories('Parts', module, {width: '100%', height: '100%'})
           <Table
             active_player={knob.boolean('active_player is host', true) ? 'host' : 'friend'}
             is_dealer={knob.boolean('is_dealer', true)}
+            game_joined={knob.boolean('game_joined', true)}
+            my_turn={knob.boolean('my_turn', true)}
+            can_start_new_game={knob.boolean('can_start_new_game', true)}
+
             dealer_deck={cards}
             board_cards={cards}
             host_cards={cards}
             friend_cards={cards}
+
             select_card={knob.action('select_card')}
             deal_cards={knob.action('deal_cards')}
+            re_shuffle={knob.action('re_shuffle')}
           />
         )
       },

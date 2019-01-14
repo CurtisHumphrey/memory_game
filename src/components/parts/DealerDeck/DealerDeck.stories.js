@@ -24,7 +24,10 @@ stories('Parts', module)
           <DealerDeck
             cards={knob.boolean('has cards', true) ? cards : []}
             is_dealer={knob.boolean('is_dealer', true)}
+            game_joined={knob.boolean('game_joined', false)}
+            can_start_new_game={knob.boolean('can_start_new_game', false)}
             onDeal={knob.action('onDeal')}
+            onReshuffle={knob.action('onReshuffle')}
           />
         )
       },

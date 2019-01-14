@@ -26,6 +26,7 @@ stories('Parts', module, {width: '100%', height: '100%'})
         return () => (
           <Board
             cards={cards}
+            my_turn={knob.boolean('my_turn', false)}
             onCardSelect={knob.action('onCardSelect')}
           />
         )
