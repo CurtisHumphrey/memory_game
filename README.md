@@ -37,8 +37,8 @@ This project is mostly to showcase both good design, delightful animations, and 
 2. clone repo
 3. run `yarn`
 4. To launch local `yarn run dev` then open [http://localhost:3000/](http://localhost:3000/)
-5. To launch TDD `yarn run tdd`
-6. To launch storybook `yarn run storybook`
+5. To launch TDD `yarn run tdd` then open [http://localhost:3001/](http://localhost:3001/)
+6. To launch storybook `yarn run storybook` then open [http://localhost:9001/](http://localhost:9001/)
 
 ### Images
 * All house images where from [Unsplash](https://unsplash.com) and are [free](https://unsplash.com/license)
