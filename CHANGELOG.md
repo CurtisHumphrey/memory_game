@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.1"></a>
+## [1.1.1](https://github.com/CurtisHumphrey/memory_game/compare/v1.1.0...v1.1.1) (2019-01-14)
+
+
+### Bug Fixes
+
+* added urls to readme ([7419ea4](https://github.com/CurtisHumphrey/memory_game/commit/7419ea4))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/CurtisHumphrey/memory_game/compare/v1.0.0...v1.1.0) (2019-01-14)
 
