@@ -9,7 +9,6 @@ import { createStructuredSelector } from 'reselect'
 import { grep_matching_from_object } from 'helpers/redux_helpers'
 
 import './<%= h.inflection.camelize(name) %>.scss'
-import HeaderWithMenuOpener from 'components/app_wide/HeaderWithMenuOpener'
 
 export const selectors = grep_matching_from_object({
 })
@@ -42,9 +41,6 @@ export class <%= h.inflection.camelize(name) %> extends React.PureComponent {
             content: '',
           }]}
         />
-        <HeaderWithMenuOpener>
-          <div><%= h.inflection.camelize(name) %></div>
-        </HeaderWithMenuOpener>
       </div>
     )
   }

@@ -32,6 +32,7 @@ const karmaConfig = {
   coverageReporter: {
     reporters: [
       { type : 'text-summary' },
+      { type : 'lcovonly', 'subdir' : 'lcov' },
       { type : 'html', dir : 'coverage', 'subdir' : 'html' },
     ],
     watermarks: {

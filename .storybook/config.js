@@ -9,6 +9,12 @@ window.it = it
 window.beforeEach = beforeEach
 window.afterEach = afterEach
 
+window.__STORE__ = {
+  asyncReducers: {},
+  replaceReducer: () => {},
+  dispatch: () => {},
+}
+
 setOptions({
   name: 'Memory Storybook',
 })

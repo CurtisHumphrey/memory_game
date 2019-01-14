@@ -1,12 +1,12 @@
-// import React from 'react'
-// import { Route } from 'react-router-dom'
+import React from 'react'
+import { Route } from 'react-router-dom'
 
-// import Main from 'views/Main'
+import Home from 'views/Home'
 
 export const createRoutes = () => {
-  // return (
-  // <Route component={Main} />
-  // )
+  return (
+    <Route path='/:game_id?' component={Home} />
+  )
 }
 
 export default createRoutes

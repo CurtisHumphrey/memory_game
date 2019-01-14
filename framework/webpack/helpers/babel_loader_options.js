@@ -41,6 +41,9 @@ module.exports = (css_module_name) => ({
         exclude: [
           '**/*.spec.js',
           '**/node_modules/**',
+          '**/src/helpers/**',
+          '**/test_helpers/**',
+          '**/framework/testing/**',
         ],
       },
     ],
