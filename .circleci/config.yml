@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build:
+  run-tests:
     docker:
       # specify the version you desire here
       - image: circleci/node:10-browsers
@@ -43,5 +43,13 @@ jobs:
 
       # run tests!
       - run: yarn run test
+      - run: cat ./coverage/lcov/lcov.info | ./node_modules/coveralls/bin/coveralls.js
       - run: yarn run lint
       - run: yarn run lint:scss
+
+workflows:
+  version: 2
+  my-workflow:
+    jobs:
+      - run-tests:
+          context: coveralls
