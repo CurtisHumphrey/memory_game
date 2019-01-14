@@ -29,6 +29,7 @@ export const Board_specs = describe('<Board />', () => {
         image_name: String(Math.floor(id / 2)),
         show_front: false,
       })),
+      my_turn: false,
       onCardSelect: sandbox.stub(),
     }
   })
@@ -54,6 +55,17 @@ export const Board_specs = describe('<Board />', () => {
       const wrapper = shallow(<Board {...props} />)
       expect(wrapper.find('Card')).to.have.length(TOTAL_CARDS - 1)
       expect(wrapper.find('EmptyCardSpace')).to.have.length(1)
+    })
+    it('when my_turn is true assign onSelect handler to Card', () => {
+      props.my_turn = false
+      const wrapper = shallow(<Board {...props} />)
+
+      expect(wrapper.find('Card').first(), 'no onSelect').to.not.have.prop('onSelect')
+
+      wrapper.setProps({my_turn: true})
+      expect(wrapper.find('Card').first(), 'now have').to.have.prop('onSelect')
+      wrapper.find('Card').first().simulate('select', props.cards[0].id)
+      expect(props.onCardSelect).to.be.calledWith(props.cards[0])
     })
   })
 })

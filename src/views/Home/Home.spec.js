@@ -25,13 +25,27 @@ export const Home_specs = describe('<Home />', () => {
     require('react-proptype-error-catcher')(sandbox)
 
     prop_selectors = {
+      game_id: '',
     }
     prop_actions = {
+      am_friend: sandbox.stub(),
+      new_game: sandbox.stub(),
+      join_game: sandbox.stub(),
+      become_friend: sandbox.stub(),
     }
+
+    prop_actions.join_game.returns({
+      then: (cb) => cb(),
+    })
 
     props = {
       ...prop_selectors,
       ...prop_actions,
+      match: {
+        params: {
+          game_id: '',
+        },
+      },
     }
   })
 
@@ -62,5 +76,25 @@ export const Home_specs = describe('<Home />', () => {
     })
   })
   describe('behaviors', () => {
+    it('if there is not a game_id on the url create a new game on mount', () => {
+      shallow(<Home {...props} />)
+      expect(props.new_game).to.be.calledOnce
+    })
+    it('if upon remount there is a game_id from redux to do not call new_game (good for HMR)', () => {
+      props.game_id = 'an_id'
+      shallow(<Home {...props} />)
+      expect(props.new_game).to.be.not.called
+    })
+    it('if there is a game_id on the url call am_friend', () => {
+      props.match.params.game_id = 'an_id'
+      shallow(<Home {...props} />)
+      expect(props.am_friend).to.be.calledOnce
+    })
+    it('if there is a game_id on the url call join_game with game_id and then become_friend after', () => {
+      props.match.params.game_id = 'an_id'
+      shallow(<Home {...props} />)
+      expect(props.join_game).to.be.calledWith('an_id')
+      expect(props.become_friend).to.be.calledAfter(props.join_game)
+    })
   })
 })

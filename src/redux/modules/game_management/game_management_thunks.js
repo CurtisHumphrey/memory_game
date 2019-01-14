@@ -17,7 +17,7 @@ import {
 
 const make_meta_path = (game_id) => `/games/${game_id}/meta`
 const get_base_path = (getState) => make_meta_path(selectors.game_id(getState()))
-const make_path = (getState, append = '') => ({path: `${get_base_path(getState)}/${append}`})
+const make_path = (getState, append) => ({path: `${get_base_path(getState)}/${append}`})
 
 export const join_game = (game_id) => (dispatch, getState) => {
   dispatch(private_actions.set_game_id(game_id))
@@ -46,8 +46,6 @@ export const new_game = () => (dispatch, getState) => {
 
   const game_id = ref.key
   join_game(game_id)(dispatch, getState)
-
-  // re_shuffle()(dispatch, getState)
 }
 
 const DEAL_SPACING = 100 // ms

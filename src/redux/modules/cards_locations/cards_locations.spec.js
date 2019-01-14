@@ -43,6 +43,7 @@ describe('cards_locations redux', () => {
     expect(selectors.board_cards(state), 'board_cards').to.have.length(0)
     expect(selectors.host_cards(state), 'host_cards').to.have.length(0)
     expect(selectors.friend_cards(state), 'friend_cards').to.have.length(0)
+    expect(selectors.matched_card_count(state), 'matched_card_count').to.eql(0)
   })
   it('get_shuffle_cards should return a deck of cards', () => {
     expect(_.keys(get_shuffle_cards(TOTAL_CARDS))).to.have.length(TOTAL_CARDS)
@@ -64,6 +65,7 @@ describe('cards_locations redux', () => {
       expect(selectors.board_cards(state)[0], 'board_cards[0]').to.equal(null)
       expect(selectors.host_cards(state), 'host_cards').to.have.length(0)
       expect(selectors.friend_cards(state), 'friend_cards').to.have.length(0)
+      expect(selectors.matched_card_count(state), 'matched_card_count').to.eql(0)
     })
     it('should have update_cards that works for board', () => {
       const cards = _.mapValues(get_shuffle_cards(TOTAL_CARDS), (v) => Object.assign({}, v, {location: 'board'}))
@@ -74,6 +76,7 @@ describe('cards_locations redux', () => {
       expect(selectors.board_cards(state)[0], 'board_cards[0]').to.not.eql(null)
       expect(selectors.host_cards(state), 'host_cards').to.have.length(0)
       expect(selectors.friend_cards(state), 'friend_cards').to.have.length(0)
+      expect(selectors.matched_card_count(state), 'matched_card_count').to.eql(0)
     })
     it('should have update_cards that works for host', () => {
       const cards = _.mapValues(get_shuffle_cards(TOTAL_CARDS), (v) => Object.assign({}, v, {location: 'host'}))
@@ -84,6 +87,7 @@ describe('cards_locations redux', () => {
       expect(selectors.board_cards(state)[0], 'board_cards[0]').to.eql(null)
       expect(selectors.host_cards(state), 'host_cards').to.have.length(TOTAL_CARDS)
       expect(selectors.friend_cards(state), 'friend_cards').to.have.length(0)
+      expect(selectors.matched_card_count(state), 'matched_card_count').to.eql(TOTAL_CARDS)
     })
     it('should have update_cards that works for friend', () => {
       const cards = _.mapValues(get_shuffle_cards(TOTAL_CARDS), (v) => Object.assign({}, v, {location: 'friend'}))
@@ -94,6 +98,7 @@ describe('cards_locations redux', () => {
       expect(selectors.board_cards(state)[0], 'board_cards[0]').to.eql(null)
       expect(selectors.host_cards(state), 'host_cards').to.have.length(0)
       expect(selectors.friend_cards(state), 'friend_cards').to.have.length(TOTAL_CARDS)
+      expect(selectors.matched_card_count(state), 'matched_card_count').to.eql(TOTAL_CARDS)
     })
   })
   describe('public actions that work with firebase', () => {
@@ -143,24 +148,29 @@ describe('cards_locations redux', () => {
         )
       })
 
-      it('should have a move_card that changes location', () => {
-        actions.move_card({id: 'card_2', new_location: 'board'})(dispatch, getState)
+      it('should have a move_cards that changes location', () => {
+        actions.move_cards([
+          {id: 'card_1', new_location: 'board'},
+          {id: 'card_2', new_location: 'board'},
+        ])(dispatch, getState)
         expect(firebase_actions.update).to.be.calledWith(
           {
-            location: 'board',
-            completed_order: null,
+            'card_2/location': 'board',
+            'card_2/completed_order': null,
+            'card_1/location': 'board',
+            'card_1/completed_order': null,
           },
-          { path: '/games/game_id/cards/card_2' }
+          { path: '/games/game_id/cards/' }
         )
       })
-      it('should have a move_card that can also update completed_order', () => {
-        actions.move_card({id: 'card_2', new_location: 'board', completed_order: 1})(dispatch, getState)
+      it('should have a move_cards that can also update completed_order', () => {
+        actions.move_cards([{id: 'card_2', new_location: 'board', completed_order: 1}])(dispatch, getState)
         expect(firebase_actions.update).to.be.calledWith(
           {
-            location: 'board',
-            completed_order: 1,
+            'card_2/location': 'board',
+            'card_2/completed_order': 1,
           },
-          { path: '/games/game_id/cards/card_2' }
+          { path: '/games/game_id/cards/' }
         )
       })
 

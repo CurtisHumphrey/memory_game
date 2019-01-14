@@ -25,8 +25,8 @@ export const Card_specs = describe('<Card />', () => {
 
     props = {
       id: 'id',
-      image_name: '1',
       show_front: false,
+      image_name: '1',
       onSelect: sandbox.stub(),
     }
   })

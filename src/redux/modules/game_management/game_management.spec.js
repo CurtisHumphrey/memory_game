@@ -151,7 +151,7 @@ describe('game_management redux', () => {
     beforeEach(() => {
       sandbox.stub(cards_actions, 'show_card').returns('show_card')
       sandbox.stub(cards_actions, 'hide_cards').returns('hide_cards')
-      sandbox.stub(cards_actions, 'move_card').returns('move_card')
+      sandbox.stub(cards_actions, 'move_cards').returns('move_cards')
 
       state = reducer(state, private_actions.set_game_id('game_id'))
 
@@ -167,12 +167,12 @@ describe('game_management redux', () => {
       const tick = 100
       actions.deal_cards()(dispatch, getState)
       deal_order_cards.forEach((card, index) => {
-        expect(dispatch).calledWith('move_card')
-        expect(cards_actions.move_card).to.have.callCount(index + 1)
-        expect(cards_actions.move_card.lastCall.args[0], index).to.eql({
+        expect(dispatch).calledWith('move_cards')
+        expect(cards_actions.move_cards).to.have.callCount(index + 1)
+        expect(cards_actions.move_cards.lastCall.args[0], index).to.eql([{
           id: card.id,
           new_location: 'board',
-        })
+        }])
         cards = _.dropRight(cards, 1)
         clock.tick(tick)
       })
@@ -215,7 +215,12 @@ describe('game_management redux', () => {
         ])
         expect_player_switched('friend')
       })
-      it('if the two selections do match call move_card on both and switch_players', () => {
+      it('if the two selections do match call move_cards after 1 second deplay on both and switch_players', () => {
+        clock = lolex.install()
+        const tick = 1000
+
+        state = reducer(state, private_actions.update_meta({active_player: 'friend'}))
+
         cards.card_1.show_front = true
         actions.select_card(cards.card_0)(dispatch, getState)
 
@@ -223,22 +228,26 @@ describe('game_management redux', () => {
 
         expect(dispatch).to.be.calledWith('show_card')
         expect(cards_actions.show_card).to.be.calledWith('card_0')
+        expect(dispatch).to.not.be.calledWith('move_cards')
 
+        clock.tick(tick)
         expect(dispatch).to.be.not.calledWith('hide_cards')
 
-        expect(dispatch).to.be.calledWith('move_card')
+        expect(dispatch).to.be.calledWith('move_cards')
 
-        expect(cards_actions.move_card).to.be.calledWith({
-          id: 'card_0',
-          location: 'host',
-          completed_order: 0,
-        })
-        expect(cards_actions.move_card).to.be.calledWith({
-          id: 'card_1',
-          location: 'host',
-          completed_order: 0,
-        })
-        expect_player_switched('friend')
+        expect(cards_actions.move_cards).to.be.calledWith([
+          {
+            id: 'card_0',
+            new_location: 'friend',
+            completed_order: 0,
+          },
+          {
+            id: 'card_1',
+            new_location: 'friend',
+            completed_order: 0,
+          },
+        ])
+        expect_player_switched('host')
       })
       it('if a third selection is attempted do nothing', () => {
         cards.card_1.show_front = true
@@ -294,14 +303,21 @@ describe('game_management redux', () => {
     it('should have a new_game that creates a new entry in firebase', () => {
       actions.new_game()(dispatch, getState)
 
-      expect(dispatch.firstCall).to.be.calledWith(firebase_actions.push({
+      const action = firebase_actions.push({
         created_at: SPECIAL_VALUES.TIMESTAMP,
         meta: {
           active_player: 'host',
         },
       }, {
         path: '/games',
-      }))
+      })
+
+      expect(dispatch.firstCall.args[0]).to.be.have.properties({
+        payload: action.payload,
+        meta: action.meta,
+      })
+
+      expect(_.keys(dispatch.firstCall.args[0].payload.cards)).to.have.length(TOTAL_CARDS)
 
       expect(dispatch).to.be.calledWith(private_actions.set_game_id(firebase_key))
       expect(dispatch).to.be.calledWith(firebase_actions.on({
@@ -311,9 +327,6 @@ describe('game_management redux', () => {
 
       expect(dispatch).to.be.calledWith('listen_for_cards')
       expect(cards_actions.listen_for_cards(firebase_key))
-
-      expect(dispatch).calledWith('setup_cards')
-      expect(_.keys(cards_actions.setup_cards.firstCall.args[0])).to.have.length(TOTAL_CARDS)
     })
     it('should have a re_shuffle moves the cards back to the dealer', () => {
       actions.re_shuffle()(dispatch, getState)

@@ -6,7 +6,8 @@ import './Card.scss'
 import posed from 'react-pose'
 import get_house_url from 'images/houses'
 
-const CardPose = posed.div({
+// exported so that tests can find this element
+export const CardPose = posed.div({
   front: {
     transform: 'rotateY(-180deg)',
   },

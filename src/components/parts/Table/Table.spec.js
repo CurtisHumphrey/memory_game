@@ -27,6 +27,10 @@ export const Table_specs = describe('<Table />', () => {
     prop_selectors = {
       active_player: 'host',
       is_dealer: true,
+      game_joined: true,
+      my_turn: true,
+      can_start_new_game: false,
+
       dealer_deck: [],
       board_cards: [],
       host_cards: [],
@@ -35,6 +39,7 @@ export const Table_specs = describe('<Table />', () => {
     prop_actions = {
       select_card: sandbox.stub(),
       deal_cards: sandbox.stub(),
+      re_shuffle: sandbox.stub(),
     }
 
     props = {
