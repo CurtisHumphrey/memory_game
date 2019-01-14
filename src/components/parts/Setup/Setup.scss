@@ -1,0 +1,53 @@
+@import '~styles/base';
+
+.root {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  // transition: background-color 0.5s ease-in-out;
+  z-index: 1000;
+  background-color: hsla(212, 95%, 95%, 0.2);
+  overflow: hidden;
+}
+
+.panel {
+  display: flex;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  flex-direction: column;
+  transform: translate(-50%, 0);
+  border-radius: 0.25*$card_size;
+  background-color: white;
+  padding: 0.5*$card_size;
+  max-width: 800px;
+}
+
+.link_group {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.label {
+  padding: 0.5rem 1rem;
+}
+
+.link {
+  border: 1px solid $color_blue;
+  border-radius: 5px;
+  background: white;
+  padding: 10px;
+  line-height: 20px;
+  font-family: monospace;
+  font-size: 2rem;
+}
+
+.big {
+  padding: 1em;
+  text-align: center;
+  font-size: 4rem;
+}

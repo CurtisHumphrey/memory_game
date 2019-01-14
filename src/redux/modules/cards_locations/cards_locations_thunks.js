@@ -13,13 +13,10 @@ const get_base_path = (getState) => make_cards_path(selectors.game_id(getState()
 const make_path = (getState, append = '') => ({path: `${get_base_path(getState)}/${append}`})
 
 export const listen_for_cards = (game_id) => (dispatch, getState) => {
-  const old_id = selectors.game_id(getState())
-
   dispatch(private_actions.set_game_id(game_id))
 
-  dispatch(firebase_actions.switch({
+  dispatch(firebase_actions.on({
     path: make_cards_path(game_id),
-    old_path: old_id ? make_cards_path(old_id) : '',
     update_action: ACTION_TYPES.update_cards,
   }))
 }
@@ -42,13 +39,16 @@ export const hide_cards = (cards) => (dispatch, getState) => {
   ))
 }
 
-export const move_card = ({id, new_location, completed_order = null}) => (dispatch, getState) => {
+export const move_cards = (moves) => (dispatch, getState) => {
+  const updates = _.reduce(moves, (collection, {id, new_location, completed_order = null}) => {
+    collection[`${id}/location`] = new_location
+    collection[`${id}/completed_order`] = completed_order
+    return collection
+  }, {})
+
   dispatch(firebase_actions.update(
-    {
-      location: new_location,
-      completed_order,
-    },
-    make_path(getState, id)
+    updates,
+    make_path(getState)
   ))
 }
 

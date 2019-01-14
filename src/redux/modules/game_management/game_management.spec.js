@@ -26,12 +26,6 @@ describe('game_management redux', () => {
   let getState
   let clock
 
-  function expect_phase_sent (phase) {
-    expect(dispatch, 'phase to be sent').to.be.calledWith(firebase_actions.set(phase, {
-      path: '/games/game_id/meta/phase',
-    }))
-  }
-
   function expect_player_switched (new_player) {
     expect(dispatch, 'expect player to be switched').to.be.calledWith(firebase_actions.set(new_player, {
       path: '/games/game_id/meta/active_player',
@@ -57,20 +51,15 @@ describe('game_management redux', () => {
 
   it('should have this initial state', () => {
     state = reducer(undefined, {})
-    expect(selectors.phase(state)).to.eql('setup')
     expect(selectors.game_id(state)).to.eql('')
-    expect(selectors.next_game_id(state)).to.eql('')
+    expect(selectors.game_joined(state)).to.eql(false)
     expect(selectors.active_player(state), 'active_player').to.eql('host')
     expect(selectors.which_player_is_me(state), 'which_player_is_me').to.eql('host')
   })
   describe('private_actions', () => {
-    it('should have a update_meta that works for phase', () => {
-      state = reducer(state, private_actions.update_meta({phase: 'dealer'}))
-      expect(selectors.phase(state)).to.eql('dealer')
-    })
-    it('should have a update_meta that works for next_game_id', () => {
-      state = reducer(state, private_actions.update_meta({next_game_id: 'new_id'}))
-      expect(selectors.next_game_id(state)).to.eql('new_id')
+    it('should have a update_meta that works for game_joined', () => {
+      state = reducer(state, private_actions.update_meta({game_joined: 'new_id'}))
+      expect(selectors.game_joined(state)).to.eql('new_id')
     })
     it('should have a update_meta that works for active_player', () => {
       state = reducer(state, private_actions.update_meta({active_player: 'friend'}))
@@ -79,6 +68,82 @@ describe('game_management redux', () => {
     it('should have a set_game_id', () => {
       state = reducer(state, private_actions.set_game_id('game_id'))
       expect(selectors.game_id(state)).to.eql('game_id')
+    })
+    it('should have a am_spectator', () => {
+      state = reducer(state, private_actions.am_spectator())
+      expect(selectors.which_player_is_me(state), 'which_player_is_me').to.eql('spectator')
+    })
+  })
+  describe('selectors', () => {
+    it('if cards are in deck and am host then is_dealer is true', () => {
+      let cards = []
+      sandbox.stub(cards_selectors, 'dealer_deck').callsFake(() => cards)
+
+      expect(selectors.is_dealer(state), 'is_dealer 1').to.be.false
+
+      cards = _.map(get_shuffle_cards(TOTAL_CARDS))
+      state = _.clone(state) // causes createSelector to recompute
+      expect(selectors.is_dealer(state), 'is_dealer 2').to.be.true
+
+      state = reducer(state, actions.am_friend())
+      expect(selectors.is_dealer(state), 'is_dealer 3').to.be.false
+    })
+    it('if cards are not on board never my_turn', () => {
+      const cards = get_shuffle_cards(TOTAL_CARDS)
+      sandbox.stub(cards_selectors, 'dealer_deck').returns(_.map(cards))
+      sandbox.stub(cards_selectors, 'matched_card_count').returns(0)
+
+      expect(selectors.active_player(state), 'active_player').to.eql('host')
+      expect(selectors.which_player_is_me(state), 'which_player_is_me').to.eql('host')
+      expect(selectors.my_turn(state)).to.eql(false)
+      expect(selectors.can_start_new_game(state), 'can_start_new_game').to.eql(false)
+    })
+    it('after cards on board if I am host and host is active my_turn is true', () => {
+      sandbox.stub(cards_selectors, 'dealer_deck').returns([])
+      sandbox.stub(cards_selectors, 'matched_card_count').returns(0)
+
+      expect(selectors.active_player(state), 'active_player').to.eql('host')
+      expect(selectors.which_player_is_me(state), 'which_player_is_me').to.eql('host')
+      expect(selectors.my_turn(state)).to.eql(true)
+      expect(selectors.can_start_new_game(state), 'can_start_new_game').to.eql(false)
+    })
+    it('if I am host and friend is active my_turn is false', () => {
+      sandbox.stub(cards_selectors, 'dealer_deck').returns([])
+      sandbox.stub(cards_selectors, 'matched_card_count').returns(0)
+
+      state = reducer(state, private_actions.update_meta({active_player: 'friend'}))
+      expect(selectors.my_turn(state)).to.eql(false)
+      expect(selectors.can_start_new_game(state), 'can_start_new_game').to.eql(false)
+    })
+    it('if I am friend and friend is active my_turn is true', () => {
+      sandbox.stub(cards_selectors, 'dealer_deck').returns([])
+      sandbox.stub(cards_selectors, 'matched_card_count').returns(0)
+
+      state = reducer(state, private_actions.update_meta({active_player: 'friend'}))
+      state = reducer(state, actions.am_friend())
+      expect(selectors.which_player_is_me(state), 'which_player_is_me').to.eql('friend')
+      expect(selectors.my_turn(state)).to.eql(true)
+      expect(selectors.can_start_new_game(state), 'can_start_new_game').to.eql(false)
+    })
+    it('when all board cards are gone it is neither person turn', () => {
+      sandbox.stub(cards_selectors, 'dealer_deck').returns([])
+      sandbox.stub(cards_selectors, 'matched_card_count').returns(TOTAL_CARDS)
+
+      expect(selectors.active_player(state), 'active_player').to.eql('host')
+      expect(selectors.which_player_is_me(state), 'which_player_is_me').to.eql('host')
+      expect(selectors.my_turn(state)).to.eql(false)
+    })
+    it('when all board cards are gone and am host then can_start_new_game is true', () => {
+      sandbox.stub(cards_selectors, 'dealer_deck').returns([])
+      sandbox.stub(cards_selectors, 'matched_card_count').returns(TOTAL_CARDS)
+
+      expect(selectors.active_player(state), 'active_player').to.eql('host')
+      expect(selectors.which_player_is_me(state), 'which_player_is_me').to.eql('host')
+      expect(selectors.can_start_new_game(state), 'can_start_new_game').to.eql(true)
+
+      state = reducer(state, private_actions.update_meta({active_player: 'friend'}))
+      state = reducer(state, actions.am_friend())
+      expect(selectors.can_start_new_game(state), 'can_start_new_game').to.eql(false)
     })
   })
   describe('public actions - no firebase', () => {
@@ -111,8 +176,6 @@ describe('game_management redux', () => {
         cards = _.dropRight(cards, 1)
         clock.tick(tick)
       })
-
-      expect_phase_sent('playing')
     })
     it('should have a am_friend', () => {
       state = reducer(undefined, actions.am_friend())
@@ -121,6 +184,7 @@ describe('game_management redux', () => {
     describe('selecting cards', () => {
       beforeEach(() => {
         sandbox.stub(cards_selectors, 'board_cards').callsFake(() => _.map(cards))
+        sandbox.stub(cards_selectors, 'matched_card_count').returns(0)
       })
       it('if just one selection should just call show_card', () => {
         actions.select_card({id: 'card_1'})(dispatch, getState)
@@ -183,16 +247,6 @@ describe('game_management redux', () => {
 
         expect(dispatch).to.be.not.called
       })
-      it('if all cards selected change phase to finished', () => {
-        const empty_board = _.map(cards, () => null)
-        empty_board[0] = cards.card_0
-        empty_board[1] = cards.card_1
-        cards.card_0.show_front = true
-        cards = empty_board
-
-        actions.select_card(empty_board[1])(dispatch, getState)
-        expect_phase_sent('finished')
-      })
     })
   })
   describe('public actions that work with firebase', () => {
@@ -211,14 +265,31 @@ describe('game_management redux', () => {
       actions.join_game('host_game_id')(dispatch, getState)
 
       expect(dispatch).to.be.calledWith(private_actions.set_game_id('host_game_id'))
-      expect(dispatch).to.be.calledWith(firebase_actions.switch({
+      expect(dispatch).to.be.calledWith(firebase_actions.on({
         path: '/games/host_game_id/meta',
-        old_path: '',
         update_action: ACTION_TYPES.update_meta,
       }))
 
       expect(dispatch).to.be.calledWith('listen_for_cards')
       expect(cards_actions.listen_for_cards(firebase_key))
+    })
+    it('should have a become_friend the sets flag if game_joined is false', () => {
+      state = reducer(state, private_actions.set_game_id('game_id'))
+      state = reducer(state, private_actions.update_meta({game_joined: false}))
+      actions.become_friend()(dispatch, getState)
+      expect(dispatch).to.be.calledWith(firebase_actions.set(true,
+        { path: '/games/game_id/meta/game_joined' }
+      ))
+    })
+    it('should have a become_friend the sets spectator if game_joined is true', () => {
+      state = reducer(state, private_actions.set_game_id('game_id'))
+      state = reducer(state, private_actions.update_meta({game_joined: true}))
+      actions.become_friend()(dispatch, getState)
+      expect(dispatch).to.be.not.calledWith(firebase_actions.set(
+        true,
+        { path: '/games/game_id/meta/game_joined' }
+      ))
+      expect(dispatch).to.be.calledWith(private_actions.am_spectator())
     })
     it('should have a new_game that creates a new entry in firebase', () => {
       actions.new_game()(dispatch, getState)
@@ -226,7 +297,6 @@ describe('game_management redux', () => {
       expect(dispatch.firstCall).to.be.calledWith(firebase_actions.push({
         created_at: SPECIAL_VALUES.TIMESTAMP,
         meta: {
-          phase: 'setup',
           active_player: 'host',
         },
       }, {
@@ -234,9 +304,8 @@ describe('game_management redux', () => {
       }))
 
       expect(dispatch).to.be.calledWith(private_actions.set_game_id(firebase_key))
-      expect(dispatch).to.be.calledWith(firebase_actions.switch({
+      expect(dispatch).to.be.calledWith(firebase_actions.on({
         path: `/games/${firebase_key}/meta`,
-        old_path: '',
         update_action: ACTION_TYPES.update_meta,
       }))
 
@@ -245,24 +314,12 @@ describe('game_management redux', () => {
 
       expect(dispatch).calledWith('setup_cards')
       expect(_.keys(cards_actions.setup_cards.firstCall.args[0])).to.have.length(TOTAL_CARDS)
-
-      expect(dispatch, 'phase to be sent').to.be.calledWith(firebase_actions.set('dealer', {
-        path: `/games/${firebase_key}/meta/phase`,
-      }))
     })
-    it('should have a new_game call a second time set next_game_id', () => {
-      state = reducer(state, private_actions.set_game_id('old_id'))
-      actions.new_game()(dispatch, getState)
+    it('should have a re_shuffle moves the cards back to the dealer', () => {
+      actions.re_shuffle()(dispatch, getState)
 
-      expect(dispatch).to.be.calledWith(firebase_actions.switch({
-        path: `/games/${firebase_key}/meta`,
-        old_path: '/games/old_id/meta',
-        update_action: ACTION_TYPES.update_meta,
-      }))
-
-      expect(dispatch, 'next_game_id to be sent to old_id').to.be.calledWith(firebase_actions.set(firebase_key, {
-        path: '/games/old_id/meta/next_game_id',
-      }))
+      expect(dispatch).calledWith('setup_cards')
+      expect(_.keys(cards_actions.setup_cards.firstCall.args[0])).to.have.length(TOTAL_CARDS)
     })
   })
 })

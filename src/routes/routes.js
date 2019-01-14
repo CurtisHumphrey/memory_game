@@ -5,7 +5,7 @@ import Home from 'views/Home'
 
 export const createRoutes = () => {
   return (
-    <Route component={Home} />
+    <Route path='/:game_id?' component={Home} />
   )
 }
 

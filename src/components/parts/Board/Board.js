@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import _ from 'lodash'
 
 import './Board.scss'
 import Card from 'components/parts/Card'
@@ -11,20 +12,25 @@ export class Board extends React.PureComponent {
     cards: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string,
     })).isRequired,
+    my_turn: PropTypes.bool.isRequired,
     onCardSelect: PropTypes.func.isRequired,
   };
   static defaultProps = {
   };
+
+  _on_select = (id) => this.props.onCardSelect(_.find(this.props.cards, {id}))
 
   render_card_placement = (card, index) => {
     if (card == null) {
       return <EmptyCardSpace key={index} styleName='card' />
     }
 
+    const onSelect = this.props.my_turn ? this._on_select : undefined
+
     return (
       <Card
         key={card.id}
-        onSelect={this.props.onCardSelect}
+        onSelect={onSelect}
         {...card}
         styleName='card'
       />

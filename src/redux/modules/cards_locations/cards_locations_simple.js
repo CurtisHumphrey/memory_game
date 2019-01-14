@@ -28,19 +28,34 @@ const shuffle_order = createSelector(
   (cards) => _.sortBy(cards, 'shuffle_order')
 )
 
+const completed_order = createSelector(
+  simple_selectors.cards,
+  (cards) => _.sortBy(cards, 'completed_order')
+)
+
 const board_cards = createSelector(
   shuffle_order,
   (cards) => cards.map((card) => (card.location !== 'board') ? null : card)
 )
+const FINISH_PILES = ['host', 'friend']
+const matched_card_count = createSelector(
+  simple_selectors.cards,
+  (cards) => _.reduce(cards, (count, {location}) => {
+    if (FINISH_PILES.includes(location)) {
+      return count + 1
+    }
+    return count
+  }, 0)
+)
 
-const make_location_selector = (location) => createSelector(
-  shuffle_order,
+const make_location_selector = (location, order) => createSelector(
+  order,
   (cards) => _.filter(cards, {location})
 )
 
-const dealer_deck = make_location_selector('dealer')
-const host_cards = make_location_selector('host')
-const friend_cards = make_location_selector('friend')
+const dealer_deck = make_location_selector('dealer', shuffle_order)
+const host_cards = make_location_selector('host', completed_order)
+const friend_cards = make_location_selector('friend', completed_order)
 
 export const selectors = {
   ...simple_selectors,
@@ -48,6 +63,7 @@ export const selectors = {
   board_cards,
   host_cards,
   friend_cards,
+  matched_card_count,
 }
 
 // ------------------------------------

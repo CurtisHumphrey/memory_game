@@ -23,7 +23,7 @@ stories('Parts', module)
         return () => (
           <DealerDeck
             cards={knob.boolean('has cards', true) ? cards : []}
-            can_deal={knob.boolean('can_deal', true)}
+            is_dealer={knob.boolean('is_dealer', true)}
             onDeal={knob.action('onDeal')}
           />
         )

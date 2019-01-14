@@ -6,7 +6,7 @@ import './Card.scss'
 import posed from 'react-pose'
 import get_house_url from 'images/houses'
 
-export const CardPose = posed.div({
+const CardPose = posed.div({
   front: {
     transform: 'rotateY(-180deg)',
   },
@@ -14,6 +14,8 @@ export const CardPose = posed.div({
     transform: 'rotateY(0deg)',
   },
 })
+
+const MOVE_DURATION = 500
 
 export class Card extends React.PureComponent {
   static propTypes = {
@@ -35,7 +37,7 @@ export class Card extends React.PureComponent {
     const clickable = !show_front && onSelect ? ' clickable' : ''
 
     return (
-      <Overdrive id={id}>
+      <Overdrive id={id} duration={MOVE_DURATION} >
         <div
           styleName={'root' + clickable}
           className={className}

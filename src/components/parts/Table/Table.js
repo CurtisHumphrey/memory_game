@@ -20,7 +20,10 @@ import {
 
 export const selectors = grep_matching_from_object({
   active_player: game_selectors,
-  can_deal: game_selectors,
+  is_dealer: game_selectors,
+  game_joined: game_selectors,
+  my_turn: game_selectors,
+  can_start_new_game: game_selectors,
 
   dealer_deck: cards_selectors,
   board_cards: cards_selectors,
@@ -31,6 +34,7 @@ export const selectors = grep_matching_from_object({
 export const actions = grep_matching_from_object({
   select_card: game_actions,
   deal_cards: game_actions,
+  re_shuffle: game_actions,
 })
 
 const mapStateToProps = createStructuredSelector(selectors)
@@ -41,13 +45,19 @@ export class Table extends React.PureComponent {
 
     // from redux
     active_player: PropTypes.string.isRequired,
-    can_deal: PropTypes.bool.isRequired,
+    is_dealer: PropTypes.bool.isRequired,
+    game_joined: PropTypes.bool.isRequired,
+    my_turn: PropTypes.bool.isRequired,
+    can_start_new_game: PropTypes.bool.isRequired,
+
     dealer_deck: PropTypes.array.isRequired,
     board_cards: PropTypes.array.isRequired,
     host_cards: PropTypes.array.isRequired,
     friend_cards: PropTypes.array.isRequired,
+
     select_card: PropTypes.func.isRequired,
     deal_cards: PropTypes.func.isRequired,
+    re_shuffle: PropTypes.func.isRequired,
   };
   static defaultProps = {
   };
@@ -55,13 +65,17 @@ export class Table extends React.PureComponent {
   render () {
     const {
       active_player,
-      can_deal,
+      is_dealer,
+      game_joined,
+      my_turn,
+      can_start_new_game,
       dealer_deck,
       board_cards,
       host_cards,
       friend_cards,
       select_card,
       deal_cards,
+      re_shuffle,
     } = this.props
 
     return (
@@ -75,8 +89,11 @@ export class Table extends React.PureComponent {
           />
           <DealerDeck
             cards={dealer_deck}
-            can_deal={can_deal}
+            is_dealer={is_dealer}
+            game_joined={game_joined}
             onDeal={deal_cards}
+            can_start_new_game={can_start_new_game}
+            onReshuffle={re_shuffle}
           />
           <PlayerWinnings
             is_active={active_player !== 'host'}
@@ -88,6 +105,7 @@ export class Table extends React.PureComponent {
           <Board
             cards={board_cards}
             onCardSelect={select_card}
+            my_turn={my_turn}
           />
         </div>
       </div>

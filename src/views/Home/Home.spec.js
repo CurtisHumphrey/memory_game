@@ -5,15 +5,15 @@ import {
 import _ from 'lodash'
 
 import {
-  Table,
+  Home,
   actions,
   selectors,
-} from './Table'
+} from './Home'
 
-// import stylesClass from './Table.scss'
+// import stylesClass from './Home.scss'
 // const styles = _.mapValues(stylesClass, (raw) => '.' + raw)
 
-export const Table_specs = describe('<Table />', () => {
+export const Home_specs = describe('<Home />', () => {
   let sandbox
   let props
   let prop_actions
@@ -25,16 +25,8 @@ export const Table_specs = describe('<Table />', () => {
     require('react-proptype-error-catcher')(sandbox)
 
     prop_selectors = {
-      active_player: 'host',
-      is_dealer: true,
-      dealer_deck: [],
-      board_cards: [],
-      host_cards: [],
-      friend_cards: [],
     }
     prop_actions = {
-      select_card: sandbox.stub(),
-      deal_cards: sandbox.stub(),
     }
 
     props = {
@@ -49,7 +41,7 @@ export const Table_specs = describe('<Table />', () => {
 
   describe('general', () => {
     it('with normal props it should render without errors', () => {
-      const wrapper = shallow(<Table {...props} />)
+      const wrapper = shallow(<Home {...props} />)
       expect(wrapper).to.exist
     })
     it('redux actions for connect should be valid and complete', () => {
@@ -70,17 +62,5 @@ export const Table_specs = describe('<Table />', () => {
     })
   })
   describe('behaviors', () => {
-    it('if active_player is host set first PlayerWinnings to is_active', () => {
-      props.active_player = 'host'
-      const wrapper = shallow(<Table {...props} />)
-      expect(wrapper.find('PlayerWinnings').at(0)).to.have.prop('is_active').eql(true)
-      expect(wrapper.find('PlayerWinnings').at(1)).to.have.prop('is_active').eql(false)
-    })
-    it('if active_player is friend set second PlayerWinnings to is_active', () => {
-      props.active_player = 'friend'
-      const wrapper = shallow(<Table {...props} />)
-      expect(wrapper.find('PlayerWinnings').at(0)).to.have.prop('is_active').eql(false)
-      expect(wrapper.find('PlayerWinnings').at(1)).to.have.prop('is_active').eql(true)
-    })
   })
 })

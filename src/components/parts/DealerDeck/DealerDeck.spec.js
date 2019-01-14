@@ -22,7 +22,7 @@ export const DealerDeck_specs = describe('<DealerDeck />', () => {
 
     props = {
       cards: [],
-      can_deal: true,
+      is_dealer: true,
       onDeal: sandbox.stub(),
     }
   })
@@ -38,13 +38,13 @@ export const DealerDeck_specs = describe('<DealerDeck />', () => {
     })
   })
   describe('behaviors', () => {
-    it('if can_deal is true display button', () => {
-      props.can_deal = true
+    it('if is_dealer is true display button', () => {
+      props.is_dealer = true
       const wrapper = shallow(<DealerDeck {...props} />)
       expect(wrapper.find('button')).to.exist
     })
-    it('if can_deal is false hide button', () => {
-      props.can_deal = false
+    it('if is_dealer is false hide button', () => {
+      props.is_dealer = false
       const wrapper = shallow(<DealerDeck {...props} />)
       expect(wrapper.find('button')).to.not.exist
     })

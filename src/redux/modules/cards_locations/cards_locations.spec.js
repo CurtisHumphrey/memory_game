@@ -107,23 +107,12 @@ describe('cards_locations redux', () => {
       test_rules({dispatch, database})
     })
     describe('loading', () => {
-      it('should have a listen_for_cards that calls firebase/switch (1st no old_path)', () => {
+      it('should have a listen_for_cards that calls firebase/on', () => {
         actions.listen_for_cards('game_id')(dispatch, getState)
 
         expect(dispatch).to.be.calledWith(private_actions.set_game_id('game_id'))
-        expect(dispatch).to.be.calledWith(firebase_actions.switch({
+        expect(dispatch).to.be.calledWith(firebase_actions.on({
           path: '/games/game_id/cards',
-          old_path: '',
-          update_action: ACTION_TYPES.update_cards,
-        }))
-      })
-      it('should have a listen_for_cards that calls firebase/switch (2nd has old_path)', () => {
-        state = reducer(state, private_actions.set_game_id('old_id'))
-        actions.listen_for_cards('game_id')(dispatch, getState)
-
-        expect(dispatch).to.be.calledWith(firebase_actions.switch({
-          path: '/games/game_id/cards',
-          old_path: '/games/old_id/cards',
           update_action: ACTION_TYPES.update_cards,
         }))
       })

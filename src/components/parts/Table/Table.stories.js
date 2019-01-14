@@ -23,7 +23,7 @@ stories('Parts', module, {width: '100%', height: '100%'})
         return () => (
           <Table
             active_player={knob.boolean('active_player is host', true) ? 'host' : 'friend'}
-            can_deal={knob.boolean('can_deal', true)}
+            is_dealer={knob.boolean('is_dealer', true)}
             dealer_deck={cards}
             board_cards={cards}
             host_cards={cards}
