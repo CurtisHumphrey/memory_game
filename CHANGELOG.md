@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/CurtisHumphrey/memory_game/compare/v1.1.1...v1.2.0) (2020-03-10)
+
+
+### Features
+
+* added logrocket into system ([ec90864](https://github.com/CurtisHumphrey/memory_game/commit/ec90864))
+
+
+
 <a name="1.1.1"></a>
 ## [1.1.1](https://github.com/CurtisHumphrey/memory_game/compare/v1.1.0...v1.1.1) (2019-01-14)
 
