@@ -96,6 +96,8 @@
     "babel-runtime": "6",
     "connected-react-router": "^6.1.0",
     "history": "^4.7.2",
+    "logrocket": "^1.0.6",
+    "logrocket-react": "^4.0.1",
     "memoize-one": "^5.0.0",
     "prop-types": "^15.6.0",
     "react": "^16.3.1",

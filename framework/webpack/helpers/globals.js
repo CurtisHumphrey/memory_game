@@ -1,7 +1,10 @@
-// const parts = require('child_process').execSync('git describe --tags --long').toString().split('-')
-// const tag = (parts[0][0] === 'v') ? parts[0].slice(1) : parts[0]
-// const hash = (parts[2][0] === 'g') ? parts[2].slice(1) : parts[2]
-const __VERSION__ = 'N/A' // JSON.stringify(`${tag}-${hash}`)
+const parts = require('child_process')
+  .execSync('git describe --tags --long')
+  .toString()
+  .split('-')
+const tag = parts[0][0] === 'v' ? parts[0].slice(1) : parts[0]
+const hash = parts[2][0] === 'g' ? parts[2].slice(1) : parts[2]
+const __VERSION__ = JSON.stringify(`${tag}-${hash}`)
 
 const env = process.env.NODE_ENV || 'production'
 

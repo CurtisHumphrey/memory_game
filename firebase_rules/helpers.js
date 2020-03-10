@@ -15,7 +15,7 @@ export const is_a_user = () => "auth !== null && auth.provider !== 'anonymous'"
 export const create_only = () => 'newData.exists() && !data.exists()'
 export const no_removing = () => 'newData.exists()'
 export const is_admin = () => "root.child('users/public').child(auth.uid).child('is_admin').val()==true"
-export const path_key_is_me = (key = '$chef_id') => `${key} === auth.uid`
+export const path_key_is_me = (key = '$auth_id') => `${key} === auth.uid`
 
 // helper blocks
 export const is_enum = (enums) => (data) => or(enums.map((e) => `${data}.val() === '${e}'`))

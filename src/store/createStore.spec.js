@@ -11,6 +11,7 @@ describe('(Store) createStore', () => {
 
   it('should have an asyncReducers object with just router and firebase', () => {
     expect(store.asyncReducers).to.have.keys([
+      'version',
       'router',
       'firebase',
     ])

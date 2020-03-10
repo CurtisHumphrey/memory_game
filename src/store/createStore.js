@@ -3,6 +3,8 @@ import thunk from 'redux-thunk'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import createHistory from 'history/createBrowserHistory'
 import { firebase_middleware, reducer as firebase } from 'redux_firebase'
+import LogRocket from 'logrocket'
+import setupLogRocketReact from 'logrocket-react'
 
 const get_firebase_config = () => {
   return require('./firebase_config.prod').default
@@ -10,6 +12,17 @@ const get_firebase_config = () => {
 
 export default (initialState = {}) => /* istanbul ignore next */ {
   const browserHistory = createHistory()
+
+  LogRocket.init('xnvior/memory-game', {
+    release: __VERSION__,
+  })
+  try {
+    setupLogRocketReact(LogRocket)
+  } catch (error) {
+    console.warn('logrocket setup failure')
+    console.warn(error)
+  }
+
   // ======================================================
   // Middleware Configuration
   // ======================================================
@@ -18,6 +31,7 @@ export default (initialState = {}) => /* istanbul ignore next */ {
     thunk,
     firebase_middleware(get_firebase_config()),
     routerMiddleware(browserHistory),
+    LogRocket.reduxMiddleware(),
   ]
 
   // ======================================================
@@ -30,6 +44,7 @@ export default (initialState = {}) => /* istanbul ignore next */ {
   // Store Instantiation and HMR Setup
   // ======================================================
   const init_reducers = {
+    version: () => __VERSION__,
     router: connectRouter(browserHistory),
     firebase,
   }
