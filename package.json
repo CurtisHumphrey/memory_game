@@ -205,7 +205,7 @@
     "sass-loader": "^7.0.1",
     "sinon": "^3.2.1",
     "sinon-chai": "^2.13.0",
-    "standard-version": "^4.3.0",
+    "standard-version": "^8.0.1",
     "stats-webpack-plugin": "^0.6.2",
     "storybook-addon-jsx": "^4.1.1",
     "storybook-addon-specifications": "https://github.com/CurtisHumphrey/storybook-addon-specifications.git#ff32e5bc",
