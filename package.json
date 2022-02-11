@@ -178,7 +178,7 @@
     "hygen": "^1.6.2",
     "imports-loader": "^0.7.1",
     "istanbul": "https://github.com/CurtisHumphrey/istanbul.git",
-    "karma": "^3.1.4",
+    "karma": "^6.3.14",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
     "karma-mocha": "^1.3.0",
